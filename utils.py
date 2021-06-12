@@ -42,19 +42,9 @@ def convert_frame_to_grayscale(frame):
         gray = cv2.GaussianBlur(gray, (9, 9), 0.0)
     return grayframe, gray
 
-def prepare_dirs(keyframePath, imageGridsPath, csvPath):
+def prepare_dirs(keyframePath):
     if not os.path.exists(keyframePath):
         os.makedirs(keyframePath)
-    if not os.path.exists(imageGridsPath):
-        os.makedirs(imageGridsPath)
-    if not os.path.exists(csvPath):
-        os.makedirs(csvPath)
 
 
-def plot_metrics(indices, lstfrm, lstdiffMag):
-    plt.plot(indices, y[indices], "x")
-    l = plt.plot(lstfrm, lstdiffMag, 'r-')
-    plt.xlabel('frames')
-    plt.ylabel('pixel difference')
-    plt.title("Pixel value differences from frame to frame and the peak values")
-    plt.show()
+
