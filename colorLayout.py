@@ -1,8 +1,6 @@
 import cv2   
 
 
-#first_image_path = 'images/imagessaltandpeperd.jpg'
-#second_image_path = 'images/imagessaltandpeperd.jpg'
 
 #print(image)
 
@@ -180,7 +178,8 @@ def meanColor(image):
     return avg_patch[0][0]
 
 
-def color_layout(image):
+def color_layout(image_path):
+    image = cv2.imread(image_path,cv2.IMREAD_COLOR)
     mean_color_layout = []
     four_images = split_to_4_images(image)
     sixteen_image = split_to_16_images(four_images)
@@ -200,23 +199,26 @@ def isSimilar(meanColorQuery, meanColorStored):
     else:
         return False
 
-##it is the compare function it takes the pathes of the two images and return true if they are similar otherwise it returns false
-def is_similar_color_layout(first_image_path,second_image_path):
+##it is the compare function it takes two arrays of 16 images and return true if they are similar otherwise it returns false
+def is_similar_color_layout(first_array,second_array):
 
     sum = 0
-    first_image = cv2.imread(first_image_path,cv2.IMREAD_COLOR)
-    second_image = cv2.imread(second_image_path,cv2.IMREAD_COLOR)
-    image1 = color_layout(first_image)
-    image2 = color_layout(second_image)
     for i in range(16):
-        if( isSimilar(image2[i],image1[i])):
+        if( isSimilar(first_array[i],second_array[i])):
             sum = sum+1
     if(sum>=12):
         return True
     else:
         return False
 
-print(is_similar_color_layout(first_image_path,second_image_path))
+#########################################################    
+first_image_path = 'images/Hp_Train1.jpg'
+second_image_path = 'images/HP_Train.jpg'
+first_array = color_layout(first_image_path)
+second_array = color_layout(second_image_path)
+print(is_similar_color_layout(first_array,second_array))
+#########################################################
+
 
 
 
