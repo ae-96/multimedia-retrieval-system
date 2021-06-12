@@ -9,61 +9,113 @@ import PIL.Image, PIL.ImageTk
 
 class gui:
     def __init__(self):
+        self.folder_path=""
         self.master=Tk()
         self.master.title("Content Based MultiMedia Retrieval System ")
+        self.master.geometry("1100x600")
         self.root = Frame(self.master)
         self.root.pack()
-
-
-        self.Welcome = Label(self.root, text="Content Based MultiMedia Retrieval System", font="Helvetica 30 ",fg="blue")
-        self.Welcome.pack(pady=20)
-
         self.File_Path=""
-        self.clicked = StringVar()
-        self.clicked.set("Image")
-        self.mode = Label(self.root, text="Please Select MultiMedia Type ", font="Helvetica 25 italic")
-        self.mode.pack()
-        self.drop = OptionMenu(self.root, self.clicked, "Image", "Video")
-        helv20 = tkFont.Font(family='Helvetica', size=24)
-        self.drop.config(font=helv20)
-        menu = self.root.nametowidget(self.drop.menuname)
+        self.search_or_insert = Label(self.root, text="Select Operation", font="Helvetica 40 ")
+        self.search_or_insert.pack(pady=50)
+
+        self.clicked2 = StringVar()
+        self.clicked2.set("Search")
+
+        self.dropp = OptionMenu(self.root, self.clicked2, "Search", "MultiMedia Insertion")
+        helv20 = tkFont.Font(family='Helvetica', size=34)
+        self.dropp.config(font=helv20)
+        menu = self.root.nametowidget(self.dropp.menuname)
         menu.config(font=helv20)  # Set the dropdown menu's font
-        self.drop.pack(pady=10)
-        self.Reset=Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
-        self.Reset.pack(side="bottom")
-        self.ok=Button(self.root, text="OK", command=self.OK, font="Helvetica 22 ", width=4)
-        self.ok.pack(pady=20)
+        self.dropp.pack(pady=10)
+
+        self.ok = Button(self.root, text="OK", command=self.OK2, font="Helvetica 26 ", width=4)
+        self.ok.pack(pady=60)
+
+
+
 
 
         self.master.mainloop()
 
+    def OK2(self):
+        self.dropp.destroy()
+        self.search_or_insert.destroy()
+        self.ok.destroy()
+        if self.clicked2.get()=="Search":
+
+            self.clicked = StringVar()
+            self.clicked.set("Image")
+            self.mode = Label(self.root, text="Please Select MultiMedia Type ", font="Helvetica 37 ")
+            self.mode.pack(pady=50)
+            self.drop = OptionMenu(self.root, self.clicked, "Image", "Video")
+            helv20 = tkFont.Font(family='Helvetica', size=34)
+            self.drop.config(font=helv20)
+            menu = self.root.nametowidget(self.drop.menuname)
+            menu.config(font=helv20)  # Set the dropdown menu's font
+            self.drop.pack(pady=40)
+
+            self.ok = Button(self.root, text="OK", command=self.OK, font="Helvetica 26 ", width=4)
+            self.ok.pack(pady=40)
+            self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
+            self.Reset.pack(side="bottom",pady=20)
+        else:
+            self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
+            self.Reset.pack(side="bottom", pady=20)
+            self.browse_data = Button(self.root, text="Browse", command=self.browse_d, font="Helvetica 28 ",
+                                 width=10)
+            self.browse_Data_label = Label(self.root, text="Please Browse MultiMedia Folder", font="Helvetica 30 ")
+
+            self.browse_Data_label.pack(pady=30)
+            self.browse_data.pack(pady=30)
+
+            self.ok = Button(self.root, text="OK", command=self.add, font="Helvetica 26 ", width=4)
+            self.ok.pack(pady=40)
+
+
+
+
+
+    def add(self):
+        if self.folder_path == "":
+            tkinter.messagebox.showinfo("error", "Please Select a non Empty Path")
+            self.browse_d()
+        self.reset()
+
+
+    def browse_d(self):
+        self.folder_path = self.filedialog("folder")
+
+        if self.folder_path == "":
+            tkinter.messagebox.showinfo("error", "Please Select a non Empty Path")
+            self.browse_d()
+
+        ################ add to database
+
     def reset(self):
         self.master.destroy()
-        self.master = Tk()
 
+        self.master = Tk()
         self.master.title("Content Based MultiMedia Retrieval System ")
+        self.master.geometry("1100x600")
         self.root = Frame(self.master)
         self.root.pack()
+        self.File_Path = ""
+        self.search_or_insert = Label(self.root, text="Select Operation", font="Helvetica 40 ")
+        self.search_or_insert.pack(pady=50)
 
-        self.Welcome = Label(self.root, text="Content Based MultiMedia Retrieval System", font="Helvetica 30 ",
-                             fg="blue")
-        self.Welcome.pack(pady=20)
+        self.clicked2 = StringVar()
+        self.clicked2.set("Search")
 
-        self.clicked = StringVar()
-        self.clicked.set("Image")
-        self.mode = Label(self.root, text="Please Select MultiMedia Type ", font="Helvetica 30 ")
-        self.mode.pack()
-        self.drop = OptionMenu(self.root, self.clicked, "Image", "Video")
-        helv20 = tkFont.Font(family='Helvetica', size=24)
-        self.drop.config(font=helv20)
-        menu = self.root.nametowidget(self.drop.menuname)
+        self.dropp = OptionMenu(self.root, self.clicked2, "Search", "Data Insertion")
+        helv20 = tkFont.Font(family='Helvetica', size=34)
+        self.dropp.config(font=helv20)
+        menu = self.root.nametowidget(self.dropp.menuname)
         menu.config(font=helv20)  # Set the dropdown menu's font
-        self.drop.pack(pady=10)
+        self.dropp.pack(pady=10)
 
-        self.ok = Button(self.root, text="OK", command=self.OK, font="Helvetica 22 ", width=4)
-        self.ok.pack(pady=10)
-        self.Reset=Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
-        self.Reset.pack(side="bottom")
+        self.ok = Button(self.root, text="OK", command=self.OK2, font="Helvetica 26 ", width=4)
+        self.ok.pack(pady=60)
 
         self.master.mainloop()
 
@@ -75,7 +127,7 @@ class gui:
         self.drop.destroy()
         if self.selected == "Image":
             self.label = Label(self.root, text="Please Select The Search Algorithm", font="Helvetica 30 ")
-            self.label.pack()
+            self.label.pack(pady=25)
 
             self.clicked1 = StringVar()
             self.clicked1.set("Mean Color Algorithm")
@@ -111,7 +163,7 @@ class gui:
             self.browse_label = Label(self.root, text="Please Browse Query Video", font="Helvetica 30 ")
 
 
-        self.browse_label.pack()
+        self.browse_label.pack(pady=20)
         self.browse.pack(pady=10)
 
 
@@ -119,9 +171,13 @@ class gui:
         self.ok1 = Button(self.root, text="OK", command=self.OK1, font="Helvetica 22 ", width=4)
         self.ok1.pack(pady=10)
 
-    def filedialog(self):
-        self.filename=filedialog.askopenfilename(title="Select A File",filetype=(("ALL","*.*"),("Img","*.jpg"),("Img","*.PNG"),("Vid","*.mp4")))
-        return self.filename
+    def filedialog(self,folder=""):
+        if folder=="folder":
+            self.filename = filedialog.askdirectory(title="Select MultiMedia Folder")
+            return self.filename
+        else:
+            self.filename=filedialog.askopenfilename(title="Select A File",filetype=(("ALL","*.*"),("Img","*.jpg"),("Img","*.PNG"),("Vid","*.mp4")))
+            return self.filename
 
     def OK1(self):
         if self.File_Path == "":
@@ -138,27 +194,13 @@ class gui:
         self.label.pack()
 
 
-        def myfunction(event):
-            canvas.configure(scrollregion=canvas.bbox("all"), width=1000, height=1000)
+
 
         canvas = Canvas(self.root,width=1000,height=500)
-        self.scroll = Frame(self.root)
-        self.scroll.pack(side=BOTTOM, fill="x")
-        self.frame = Frame(canvas)
-        myscrollbar = Scrollbar(self.root, command=canvas.yview)
-        canvas.configure(yscrollcommand=myscrollbar.set)
-        canvas.create_window((0, 0), window=self.frame, anchor='nw')
-        self.frame.bind("<Configure>", myfunction)
-        myscrollbar.pack(side=RIGHT, fill="y")
-        canvas.pack(side=RIGHT)
 
-        myscrollbar1 = Scrollbar(self.scroll, orient="horizontal", command=canvas.xview)
-        canvas.configure(xscrollcommand=myscrollbar1.set)
-        canvas.create_window((0, 0), window=self.frame, anchor='nw')
-        self.frame.bind("<Configure>", myfunction)
-        myscrollbar1.pack(side="bottom", fill="x")
         canvas.pack(side="bottom")
-        self.list_images = []
+
+        self.list_images = ["0.png","1.png","2.png","3.png","4.png"]
 
         ######################### list of images here
 
@@ -187,17 +229,6 @@ class gui:
 
 
         self.master.mainloop()
-
-
-
-
-
-
-
-
-
-
-
 
 
 
