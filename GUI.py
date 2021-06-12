@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import cv2
 import matplotlib.pyplot as plt
 from  tkinter import  filedialog
+import PIL.Image, PIL.ImageTk
 
 class gui:
     def __init__(self):
@@ -140,7 +141,7 @@ class gui:
         def myfunction(event):
             canvas.configure(scrollregion=canvas.bbox("all"), width=1000, height=1000)
 
-        canvas = Canvas(self.root)
+        canvas = Canvas(self.root,width=1000,height=500)
         self.scroll = Frame(self.root)
         self.scroll.pack(side=BOTTOM, fill="x")
         self.frame = Frame(canvas)
@@ -164,14 +165,28 @@ class gui:
 
 
 
-        index=20
+        index_x=20
+        index_y=0
+        images_list=[]
+        k=0
         for i in self.list_images:
 
+            img=cv2.imread(i)
+            img=cv2.resize(img, (150, 150))
+            image = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(img))
+            images_list.append(image)
 
-            image=PhotoImage(file=i)
-            image=image.zoom(25)
-            canvas.create_image(index,index,anchor = NW, image =image)
-            index+=250
+
+            canvas.create_image(index_x,index_y,anchor = NW, image =images_list[k])
+            index_x+=200
+            if ((k % 5 )==0) and (k !=0):
+                index_x = 20
+                index_y+=200
+
+            k+=1
+
+
+        self.master.mainloop()
 
 
 
