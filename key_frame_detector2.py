@@ -24,10 +24,13 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     lastFrame = None
     Start_time = time.process_time()
     # Read until video is completed
-    for i in range(numberOfFrames):
+
+    for i in range(0,numberOfFrames,(fps*minKeyFrameTimeinSec)):
+        cap.set(1, i)
         ret, frame = cap.read()
 
         frame_number = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
+        
 
 
         videoFrames.append(frame)
@@ -47,8 +50,8 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     y = np.array(lstdiffMag)
     base = peakutils.baseline(y, 8)
     #get indicies of the frames with higher diffrence than threshold
-    indices = peakutils.indexes(y-base, Thres, min_dist=fps*minKeyFrameTimeinSec)
-
+    indices = peakutils.indexes(y-base, Thres, min_dist=1)
+    
     cnt = 1
     for frame_num in indices:
         cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
