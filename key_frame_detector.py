@@ -1,76 +1,62 @@
 import os
 import cv2
-import csv
 import numpy as np
 import time
 import peakutils
-from KeyFrameDetector.utils import convert_frame_to_grayscale, prepare_dirs, plot_metrics
+from .utils import  prepare_dirs
 
-def keyframeDetection(source, dest, Thres, plotMetrics=False, verbose=False):
+def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False):
     
     keyframePath = dest+'/keyFrames'
-    imageGridsPath = dest+'/imageGrids'
-    csvPath = dest+'/csvFile'
-    path2file = csvPath + '/output.csv'
-    prepare_dirs(keyframePath, imageGridsPath, csvPath)
+    prepare_dirs(keyframePath)
 
     cap = cv2.VideoCapture(source)
-    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    numberOfFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
   
     if (cap.isOpened()== False):
         print("Error opening video file")
 
-    lstfrm = []
+    keyFrames = []
     lstdiffMag = []
     timeSpans = []
-    images = []
-    full_color = []
+    videoFrames = []
     lastFrame = None
     Start_time = time.process_time()
-    
     # Read until video is completed
-    for i in range(length):
+    for i in range(numberOfFrames):
         ret, frame = cap.read()
-        grayframe, blur_gray = convert_frame_to_grayscale(frame)
 
         frame_number = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
-        lstfrm.append(frame_number)
-        images.append(grayframe)
-        full_color.append(frame)
-        if frame_number == 0:
-            lastFrame = blur_gray
 
-        diff = cv2.subtract(blur_gray, lastFrame)
-        diffMag = cv2.countNonZero(diff)
+
+        videoFrames.append(frame)
+        if frame_number == 0:
+            lastFrame = frame
+
+
+        diff = cv2.absdiff(frame, lastFrame)
+        diffMag = np.count_nonzero(diff)
         lstdiffMag.append(diffMag)
         stop_time = time.process_time()
         time_Span = stop_time-Start_time
         timeSpans.append(time_Span)
-        lastFrame = blur_gray
+        lastFrame = frame
 
     cap.release()
     y = np.array(lstdiffMag)
-    base = peakutils.baseline(y, 2)
-    indices = peakutils.indexes(y-base, Thres, min_dist=1)
-    
-    ##plot to monitor the selected keyframe
-    if (plotMetrics):
-        plot_metrics(indices, lstfrm, lstdiffMag)
+    base = peakutils.baseline(y, 8)
+    #get indicies of the frames with higher diffrence than threshold
+    indices = peakutils.indexes(y-base, Thres, min_dist=fps*minKeyFrameTimeinSec)
 
     cnt = 1
-    for x in indices:
-        cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), full_color[x])
+    for frame_num in indices:
+        cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
+        keyFrames.append(videoFrames[frame_num])
         cnt +=1
-        log_message = 'keyframe ' + str(cnt) + ' happened at ' + str(timeSpans[x]) + ' sec.'
-        if(verbose):
-            print(log_message)
-            print(x)
-        with open(path2file, 'w') as csvFile:
-            writer = csv.writer(csvFile)
-            writer.writerows(log_message)
-            # writer.writerows('frame ' + x)
-            writer.writerows(full_color[x])
-            writer.writerows('\n')
-            csvFile.close()
+        if(logs):
+            log_message = 'keyframe ' + str(cnt) + ' happened at ' + str(timeSpans[frame_num]) + ' sec.'
+            print(logs)
+            print('frame Number: ' +frame_num)
 
-    cv2.destroyAllWindows()
+    return keyFrames
