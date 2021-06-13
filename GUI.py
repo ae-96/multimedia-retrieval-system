@@ -84,7 +84,7 @@ class gui:
 
     def clear(self):
         for i in os.listdir(os. getcwd()):
-            if i== "mm.dp":
+            if i== "mm.db":
                 path = os.path.join(i, os. getcwd())
                 os.remove(path)
         self.reset()
