@@ -20,7 +20,7 @@ def find_hisogram(ImagePath):
     return list_of_all_channels_pins
     # return Histogram
 
-def isSimilar(pins_query,pins_db):
+def isSimilarr(pins_query,pins_db):
     minimum=0
     db_pins=0
     for i in range(len(pins_query)):

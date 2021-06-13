@@ -1,11 +1,11 @@
 import sqlite3
 from sqlite3 import Error
-import os
+
 
 import colorLayout
 from meanColor import *
 from video_algorithm import *
-
+from histogram2 import *
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -148,7 +148,8 @@ def apply_algo(path, algo):
     result = []
     if algo == "mean":
         for i in meanColor(path): result.append(str(i))
-    if algo == "hist": pass
+    if algo == "hist":
+        for i in find_hisogram(path): result.append(str(i))
     if algo == "layout":
         for i in colorLayout.color_layout(path):
             temp = []
@@ -191,7 +192,12 @@ def search_image(conn, path, algo):
         for i in range(len(fromdb)):
             if isSimilar(searchimage, fromdb[i]):
                 result.append(get_column_from_image(conn, "path")[i])
-    if algo == "hist": pass
+    if algo == "hist":
+        searchimage = find_hisogram(path)
+        fromdb = get_column_from_image(conn, "hist")
+        for i in range(len(fromdb)):
+            if isSimilarr(searchimage, fromdb[i]):
+                result.append(get_column_from_image(conn, "path")[i])
     if algo == "layout":
         searchimage = colorLayout.color_layout(path)
         fromdb = get_column_from_image(conn, "layout")
@@ -203,7 +209,7 @@ def search_image(conn, path, algo):
 
 def search_video(conn, path):
     result = []
-    print(path)
+
     search_video = keyFrames_meanColor(path)
     fromdb = get_cbvr(conn, "cbvr")
     for i in range(len(fromdb)):
@@ -218,9 +224,11 @@ conn = start_db()  # call at the start of gui
 
 path = "G:\\4th cse\\sec term\\multimedia\\proj\\1.png"
 insert_image(conn, path)
-result = search_image(conn, path, "layout")
-
+result = search_image(conn, path, "hist")
+print(result)
+'''
 vid_path = "G:/4th cse/sec term/multimedia/proj/0.mp4"
 inser_video(conn,vid_path)
 vidresult = search_video(conn,vid_path)
 print(vidresult)
+'''
