@@ -7,9 +7,11 @@ import matplotlib.pyplot as plt
 from  tkinter import  filedialog
 import PIL.Image, PIL.ImageTk
 import os
+from db import *
 
 class gui:
     def __init__(self):
+
         self.folder_path=""
         self.master=Tk()
         self.master.title("Content Based MultiMedia Retrieval System ")
@@ -44,6 +46,7 @@ class gui:
         self.search_or_insert.destroy()
         self.ok.destroy()
         if self.clicked2.get()=="Retrieve":
+            self.conn = start_db()
 
             self.clicked = StringVar()
             self.clicked.set("Image")
@@ -61,6 +64,8 @@ class gui:
             self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
             self.Reset.pack(side="bottom",pady=20)
         elif self.clicked2.get()=="DataBase Insertion":
+            self.conn = start_db()
+
             self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
             self.Reset.pack(side="bottom", pady=20)
             self.browse_data = Button(self.root, text="Browse", command=self.browse_d, font="Helvetica 28 ",
@@ -77,7 +82,8 @@ class gui:
             self.Reset.pack(side="bottom", pady=20)
 
             self.Clear=Button(self.root, text="Clear DataBase", command=self.clear, font="Helvetica 28 ",
-                                 width=10)
+                                 width=15)
+            self.Clear.pack(pady=30)
 
 
 
@@ -85,7 +91,9 @@ class gui:
     def clear(self):
         for i in os.listdir(os. getcwd()):
             if i== "mm.db":
-                path = os.path.join(i, os. getcwd())
+                path = os. getcwd()+"\\"+i
+                if self.conn:
+                    self.conn.close()
                 os.remove(path)
         self.reset()
 
@@ -101,16 +109,26 @@ class gui:
 
     def browse_d(self):
         self.folder_path = self.filedialog("folder")
+        self.content_list_images=[]
+        self.content_list_videos=[]
 
         if self.folder_path == "":
             tkinter.messagebox.showinfo("error", "Please Select a non Empty Path")
             self.browse_d()
+        for i in os.listdir(self.folder_path):
+            if i[-3:]!="mp4":
+                self.content_list_images.append(self.folder_path+"/"+i)
+            else:
+                self.content_list_videos.append(self.folder_path + "/" + i)
 
-        ################ add to database
+        for i in self.content_list_images:
+            insert_image(self.conn, i)
+        for i in self.content_list_videos:
+            inser_video(self.conn, i)
+
 
     def reset(self):
         self.master.destroy()
-
         self.folder_path = ""
         self.master = Tk()
         self.master.title("Content Based MultiMedia Retrieval System ")
@@ -197,6 +215,8 @@ class gui:
             return self.filename
 
     def OK1(self):
+        type = self.clicked1.get()
+        self.list_images = []
         if self.File_Path == "":
             tkinter.messagebox.showinfo("error","Please Select a non Empty Path")
             self.browsee()
@@ -209,45 +229,51 @@ class gui:
 
         self.label = Label(self.root, text="Results", font="Helvetica 30 ")
         self.label.pack()
+        if type=="Mean Color Algorithm":
+            type="mean"
+        elif type=="Histogram Algorithm":
+            type="hist"
+        else :
+            type="layout"
+
+        if self.selected == "Video":
+            string=""
+            self.list_images = search_video(self.conn, self.filename)
+            canvas = Canvas(self.root, width=1500, height=1500)
+
+            for i in self.list_images:
+                string+=i+"\n"
+            canvas.create_text(string)
 
 
+        if self.selected == "Image":
+            self.list_images = search_image(self.conn, self.filename, type)
+            canvas = Canvas(self.root,width=1500,height=1500)
+
+            canvas.pack(side="bottom")
+
+            index_x=20
+            index_y=0
+            images_list=[]
+            k=1
+            for i in self.list_images:
 
 
-        canvas = Canvas(self.root,width=1000,height=500)
+                image = PhotoImage(file=i)
+                image=image.subsample(9, 9)
+                images_list.append(image)
 
-        canvas.pack(side="bottom")
-
-        self.list_images = ["0.png","1.png","2.png","3.png","4.png"]
-
-        ######################### list of images here
-
-
-
-
-        index_x=20
-        index_y=0
-        images_list=[]
-        k=0
-        for i in self.list_images:
-
-            #img=cv2.imread(i)
-            #img=cv2.resize(img, (150, 150))
-            #image = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(img))
-            image = PhotoImage(file=i)
-            image=image.subsample(8, 8)
-            images_list.append(image)
+            for i in images_list:
+                canvas.create_image(index_x,index_y,anchor = NW, image =i)
+                index_x+=200
+                if ((k % 7 )==0) :
+                    index_x = 20
+                    index_y+=240
+                k+=1
+            canvas.create_image(index_x, index_y, anchor=NW, image=images_list[0])
 
 
-            canvas.create_image(index_x,index_y,anchor = NW, image =images_list[k])
-            index_x+=200
-            if ((k % 5 )==0) and (k !=0):
-                index_x = 20
-                index_y+=200
-
-            k+=1
-
-
-        self.master.mainloop()
+            self.master.mainloop()
 
 
 

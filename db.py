@@ -219,14 +219,16 @@ def search_video(conn, path):
 
 
 ############# test ######################
-
+'''
 conn = start_db()  # call at the start of gui
+
+
 
 path = "G:\\4th cse\\sec term\\multimedia\\proj\\1.png"
 insert_image(conn, path)
 result = search_image(conn, path, "hist")
 print(result)
-'''
+
 vid_path = "G:/4th cse/sec term/multimedia/proj/0.mp4"
 inser_video(conn,vid_path)
 vidresult = search_video(conn,vid_path)
