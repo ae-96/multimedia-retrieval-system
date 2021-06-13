@@ -6,7 +6,7 @@ import peakutils
 from utils import  prepare_dirs
 from meanColor import isSimilar
 def keyFrames_meanColor(videoPath):
-    keyFramesList=keyframeDetection(videoPath, 'none', 0.1 ,1, False)
+    keyFramesList=keyframeDetection(videoPath, 'none', 0.1 ,1, False)[0]
     meanColorsList=[]
     for i in keyFramesList:
         average = i.mean(axis=0).mean(axis=0)
@@ -15,8 +15,8 @@ def keyFrames_meanColor(videoPath):
         meanColorsList.append(list(avg_patch[0][0]))
     return meanColorsList
 def is_videos_similar(meanColorsList_query,meanColorsList_db):
-    print(meanColorsList_query)
-    print(meanColorsList_db)
+    #print(meanColorsList_query)
+    #print(meanColorsList_db)
     similar_frames=0
     for i in range(len(meanColorsList_query)):
         if isSimilar(meanColorsList_query[i],meanColorsList_db[i]):
@@ -25,6 +25,13 @@ def is_videos_similar(meanColorsList_query,meanColorsList_db):
         return True
     else:
         return False
+
+def is_frame_in_video(meanColor_query,meanColorsList_db):
+
+    for i in range(len(meanColorsList_db)):
+        if isSimilar(meanColor_query,meanColorsList_db[i]):
+            return True
+    return False
 
 
 
