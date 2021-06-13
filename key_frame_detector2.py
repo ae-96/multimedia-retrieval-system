@@ -20,7 +20,8 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     keyFrames = []
     lstdiffMag = []
     timeSpans = []
-    times = []  # store keyframes time in mile seconds
+    times = []  # store frames time in mile seconds
+    keyframesTimes = []
 
     videoFrames = []
     lastFrame = None
@@ -60,8 +61,9 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
         cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
         keyFrames.append(videoFrames[frame_num])
         cnt +=1
+        keyframesTimes.append(times[frame_num])
         if(logs):
            log_message = 'keyframe ' + str(cnt) + ' happened at ' + 'the second number'+ str(times[frame_num] / 1000)
            print(log_message)
 
-    return keyFrames
+    return keyFrames , keyframesTimes
