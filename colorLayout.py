@@ -1,5 +1,5 @@
 import cv2   
-
+import numpy as np
 
 image = cv2.imread('images/HP_train.jpg',cv2.IMREAD_COLOR)
 #print(image)
