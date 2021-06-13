@@ -63,7 +63,7 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
         cnt +=1
         keyframesTimes.append(times[frame_num])
         if(logs):
-           log_message = 'keyframe ' + str(cnt) + ' happened at ' + 'the second number'+ str(times[frame_num] / 1000)
+           log_message = 'keyframe ' + str(cnt) + ' happened at ' + 'the second number: '+ str(times[frame_num] / 1000)
            print(log_message)
 
     return keyFrames , keyframesTimes
