@@ -1,4 +1,5 @@
 import sqlite3
+import threading
 from sqlite3 import Error
 
 
@@ -169,12 +170,19 @@ def apply_cbvr(path):
 
 
 def insert_image(conn, path):
+
     with conn:
         mean = apply_algo(path, "mean")
+
         layout = apply_algo(path, "layout")
+        print(threading.current_thread())
+
         hist = apply_algo(path, "hist")
+        print("end")
         image = (path, mean, layout, hist)
+
         create_image(conn, image)
+
 
 
 def inser_video(conn, path):
