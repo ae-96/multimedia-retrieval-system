@@ -132,5 +132,4 @@ first_array = color_layout(first_image_path)
 second_array = color_layout(second_image_path)
 print(is_similar_color_layout(first_array,second_array))
 #########################################################
-
 '''
