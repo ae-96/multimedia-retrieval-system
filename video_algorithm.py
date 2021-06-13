@@ -19,7 +19,7 @@ def is_videos_similar(meanColorsList_query,meanColorsList_db):
     for i in range(len(meanColorsList_query)):
         if isSimilar(meanColorsList_query[i],meanColorsList_db[i]):
             similar_frames+=1
-    if (similar_frames/meanColorsList_query)>0.9:
+    if (similar_frames/len(meanColorsList_query))>0.9:
         return True
     else:
         return False
