@@ -20,13 +20,19 @@ def find_hisogram(ImagePath):
     return list_of_all_channels_pins
     # return Histogram
 
-def isSimilarr(pins_query,pins_db):
+def isSimilarr(bins_query,bins_db):
+
+    normalized_db_bins=[0]*24
+    normalized_query_bins=[0]*24
+    for i in range(0,24):
+        normalized_db_bins[i]=bins_db[i]/sum(bins_db[0:8])
+        normalized_query_bins[i]=bins_query[i]/sum(bins_query[0:8])
     minimum=0
     db_pins=0
-    for i in range(len(pins_query)):
-        minimum+=min(pins_query[i],pins_db[i])
-        db_pins+=pins_db[i]
-    if (minimum/db_pins)>0.8:
+    for i in range(len(normalized_query_bins)):
+        minimum+=min(normalized_query_bins[i],normalized_db_bins[i])
+        db_pins+=normalized_db_bins[i]
+    if (minimum/db_pins)>0.9:
         return True
     else:
         return False
