@@ -44,6 +44,9 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     keyFrames = []
     lstdiffMag = []
     timeSpans = []
+    times = []  # store frames time in mile seconds
+    keyframesTimes = []
+
     videoFrames = []
     lastFrame = None
     Start_time = time.process_time()
@@ -52,6 +55,7 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     for i in range(0,numberOfFrames,(fps*minKeyFrameTimeinSec)):
         cap.set(1, i)
         ret, frame = cap.read()
+        times.append(cap.get(cv2.CAP_PROP_POS_MSEC))
 
         frame_number = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
         
@@ -78,12 +82,12 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     
     cnt = 1
     for frame_num in indices:
-        #cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
+        cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
         keyFrames.append(videoFrames[frame_num])
         cnt +=1
+        keyframesTimes.append(times[frame_num])
         if(logs):
-            log_message = 'keyframe ' + str(cnt) + ' happened at ' + str(timeSpans[frame_num]) + ' sec.'
-            print(logs)
-            print('frame Number: ' +frame_num)
+           log_message = 'keyframe ' + str(cnt) + ' happened at ' + 'the second number: '+ str(times[frame_num] / 1000)
+           print(log_message)
 
-    return keyFrames
+    return keyFrames , keyframesTimes
