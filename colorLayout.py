@@ -1,8 +1,8 @@
 import cv2   
-import numpy as np
 
 
-
+image = cv2.imread('images/HP_train.jpg',cv2.IMREAD_COLOR)
+#print(image)
 
 def split_to_4_images(image):
     # load image
@@ -93,17 +93,25 @@ def color_layout(image_path):
         mean_color_layout.append(meanColor(sixteen_image[i]))
     return mean_color_layout
 
-def isSimilar(meanColorQuery, meanColorStored):
-    d = []
+def isSimilar(meanColorQuery, meanColorStored):    
+    minRange = [0, 0, 0]
+    maxRange = [0, 0, 0]
     for i in range(0, 3):
-        if meanColorQuery[i] > meanColorStored[i]:
-            d.append((meanColorQuery[i] - meanColorStored[i])/meanColorQuery[i])
+        if meanColorStored[i] < 26:
+            minRange[i] = 0
         else:
-            d.append((meanColorStored[i] - meanColorQuery[i])/meanColorQuery[i])
-    if d[0] <= 0.1 and d[1] <= 0.1 and d[2] <= 0.1:
-        return True
-    else:
-        return False
+            minRange[i] = meanColorStored[i] - 26
+        
+        if meanColorStored[i] > 229:
+            maxRange[i] = 255
+        else:
+            maxRange[i] = meanColorStored[i] + 26
+        
+    for i in range(0, 3):
+        if not(meanColorQuery[i] <= maxRange[i] and meanColorQuery[i] >= minRange[i]):
+            return False
+    
+    return True
 
 ##it is the compare function it takes two arrays of 16 images and return true if they are similar otherwise it returns false
 def is_similar_color_layout(first_array,second_array):
@@ -116,19 +124,12 @@ def is_similar_color_layout(first_array,second_array):
         return True
     else:
         return False
-'''
-#########################################################
-first_image_path = "G:\\4th cse\sec term\multimedia\proj\\1.png"
-second_image_path = "G:\\4th cse\sec term\multimedia\proj\\1.png"
+
+#########################################################    
+first_image_path = 'images/1.jpg'
+second_image_path = 'images/1.jpg'
 first_array = color_layout(first_image_path)
 second_array = color_layout(second_image_path)
 print(is_similar_color_layout(first_array,second_array))
 #########################################################
-'''
-
-
-
-#print(color_layout(image))
-
-
 

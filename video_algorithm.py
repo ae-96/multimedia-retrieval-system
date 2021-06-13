@@ -6,7 +6,7 @@ import peakutils
 from utils import  prepare_dirs
 from meanColor import isSimilar
 def keyFrames_meanColor(videoPath):
-    keyFramesList=keyframeDetection(videoPath, 'none', 0.1 ,1, False)
+    keyFramesList=keyframeDetection(videoPath, 'none', 0.1 ,1, False)[0]
     meanColorsList=[]
     for i in keyFramesList:
         average = i.mean(axis=0).mean(axis=0)
@@ -15,8 +15,8 @@ def keyFrames_meanColor(videoPath):
         meanColorsList.append(list(avg_patch[0][0]))
     return meanColorsList
 def is_videos_similar(meanColorsList_query,meanColorsList_db):
-    print(meanColorsList_query)
-    print(meanColorsList_db)
+    #print(meanColorsList_query)
+    #print(meanColorsList_db)
     similar_frames=0
     for i in range(len(meanColorsList_query)):
         if isSimilar(meanColorsList_query[i],meanColorsList_db[i]):
@@ -25,6 +25,13 @@ def is_videos_similar(meanColorsList_query,meanColorsList_db):
         return True
     else:
         return False
+
+def is_frame_in_video(meanColor_query,meanColorsList_db):
+
+    for i in range(len(meanColorsList_db)):
+        if isSimilar(meanColor_query,meanColorsList_db[i]):
+            return True
+    return False
 
 
 
@@ -44,6 +51,9 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     keyFrames = []
     lstdiffMag = []
     timeSpans = []
+    times = []  # store frames time in mile seconds
+    keyframesTimes = []
+
     videoFrames = []
     lastFrame = None
     Start_time = time.process_time()
@@ -52,6 +62,7 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     for i in range(0,numberOfFrames,(fps*minKeyFrameTimeinSec)):
         cap.set(1, i)
         ret, frame = cap.read()
+        times.append(cap.get(cv2.CAP_PROP_POS_MSEC))
 
         frame_number = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
         
@@ -78,12 +89,12 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     
     cnt = 1
     for frame_num in indices:
-        #cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
+        cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
         keyFrames.append(videoFrames[frame_num])
         cnt +=1
+        keyframesTimes.append(times[frame_num])
         if(logs):
-            log_message = 'keyframe ' + str(cnt) + ' happened at ' + str(timeSpans[frame_num]) + ' sec.'
-            print(logs)
-            print('frame Number: ' +frame_num)
+           log_message = 'keyframe ' + str(cnt) + ' happened at ' + 'the second number: '+ str(times[frame_num] / 1000)
+           print(log_message)
 
-    return keyFrames
+    return keyFrames , keyframesTimes
