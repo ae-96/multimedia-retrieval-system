@@ -8,19 +8,26 @@ from matplotlib import pyplot as plt
 #    2) isSimilar: returns true or false indicating if there is similarity, you will pass to it the mean color of the 2 images.
 
 
-#=================================Determine whether these 2 colors are similar or not======================================#
+#=================================Calculates the distance between the mean color of 2 images===============================#   
 def isSimilar(meanColorQuery, meanColorStored):    
-    d = []
+    minRange = [0, 0, 0]
+    maxRange = [0, 0, 0]
     for i in range(0, 3):
-        if meanColorQuery[i] > meanColorStored[i]:
-            d.append((meanColorQuery[i] - meanColorStored[i])/meanColorQuery[i])
+        if meanColorStored[i] < 26:
+            minRange[i] = 0
         else:
-            d.append((meanColorStored[i] - meanColorQuery[i])/meanColorQuery[i])
-    if d[0] <= 0.1 and d[1] <= 0.1 and d[2] <= 0.1:
-        return True
-    else:
-        return False
-
+            minRange[i] = meanColorStored[i] - 26
+        
+        if meanColorStored[i] > 229:
+            maxRange[i] = 255
+        else:
+            maxRange[i] = meanColorStored[i] + 26
+        
+    for i in range(0, 3):
+        if not(meanColorQuery[i] <= maxRange[i] and meanColorQuery[i] >= minRange[i]):
+            return False
+    
+    return True
 
 #=====================================Calculates the mean color of the image given its path================================#
 def meanColor(path):
