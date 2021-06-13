@@ -229,8 +229,11 @@ insert_image(conn, path)
 result = search_image(conn, path, "hist")
 print(result)
 
-vid_path = "G:/4th cse/sec term/multimedia/proj/0.mp4"
+conn = start_db()  # call at the start of gui
+vid_path = "E:\\forth year\\image\PROJECT\\videos\\0.mp4"
+vid_path1 = "E:\\forth year\\image\PROJECT\\videos\\1.mp4"
 inser_video(conn,vid_path)
+inser_video(conn,vid_path1)
 vidresult = search_video(conn,vid_path)
 print(vidresult)
 '''

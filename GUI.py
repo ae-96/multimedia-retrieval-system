@@ -8,9 +8,12 @@ from  tkinter import  filedialog
 import PIL.Image, PIL.ImageTk
 import os
 from db import *
+import threading
+import sqlite3
 
 class gui:
     def __init__(self):
+        self.conn = start_db()
 
         self.folder_path=""
         self.master=Tk()
@@ -108,6 +111,26 @@ class gui:
 
 
     def browse_d(self):
+        thread_list=[]
+
+        def instering_image2(i,conn,content_list_images):
+            print(i)
+            insert_image(conn, content_list_images[i])
+
+
+        '''def instering_image(min,max):
+            for i in range(min,max):
+
+                insert_image(self.conn, self.content_list_images[i])
+
+
+
+        def create_thread(listt,number):
+            temp=threading.Thread(target=instering_image2, args=(number,))
+            listt.append(temp)'''
+
+
+
         self.folder_path = self.filedialog("folder")
         self.content_list_images=[]
         self.content_list_videos=[]
@@ -120,9 +143,80 @@ class gui:
                 self.content_list_images.append(self.folder_path+"/"+i)
             else:
                 self.content_list_videos.append(self.folder_path + "/" + i)
+        if self.conn:
+            self.conn.close()
+        self.conn=sqlite3.connect("mm.db", check_same_thread = False)
+        length = len(self.content_list_images)
 
-        for i in self.content_list_images:
-            insert_image(self.conn, i)
+        def create_lessthan_12(conn,listt):
+            t0 = threading.Thread(target=instering_image2, args=(0,conn,listt,))
+            thread_list.append(t0)
+            t0.start()
+            if length>1:
+                t1 = threading.Thread(target=instering_image2, args=(1,conn,listt,))
+                thread_list.append(t1)
+                t1.start()
+            if length > 2:
+                t2 = threading.Thread(target=instering_image2, args=(2,conn,listt,))
+                thread_list.append(t2)
+                t2.start()
+            if length > 3:
+                t3 = threading.Thread(target=instering_image2, args=(3,conn,listt,))
+                thread_list.append(t3)
+                t3.start()
+            if length >4:
+                t4 = threading.Thread(target=instering_image2, args=(4,conn,listt,))
+                thread_list.append(t4)
+                t4.start()
+            if length>5:
+                t5 = threading.Thread(target=instering_image2, args=(5,conn,listt,))
+                thread_list.append(t5)
+                t5.start()
+            if length > 6:
+                t6 = threading.Thread(target=instering_image2, args=(6,conn,listt,))
+                thread_list.append(t6)
+                t6.start()
+            if length > 7:
+                t7 = threading.Thread(target=instering_image2, args=(7,conn,listt,))
+                thread_list.append(t7)
+                t7.start()
+            if length > 8:
+                t8 = threading.Thread(target=instering_image2, args=(8,conn,listt,))
+                thread_list.append(t8)
+                t8.start()
+            if length>9:
+                t9 = threading.Thread(target=instering_image2, args=(9,conn,listt,))
+                thread_list.append(t9)
+                t9.start()
+            if length > 10:
+                t10 = threading.Thread(target=instering_image2, args=(10,conn,listt,))
+                thread_list.append(t10)
+                t10.start()
+            if length > 11:
+                t11 = threading.Thread(target=instering_image2, args=(11,conn,listt,))
+                thread_list.append(t11)
+                t11.start()
+
+            #for t in thread_list:
+                #t.start()
+
+            print(threading.enumerate())
+            for t in thread_list:
+                t.join()
+
+            #while True :
+                #print(threading.active_count())
+                #print(threading.current_thread())
+
+        if length <12:
+
+            create_lessthan_12(self.conn,self.content_list_images)
+
+
+
+
+
+
         for i in self.content_list_videos:
             inser_video(self.conn, i)
 
@@ -217,6 +311,7 @@ class gui:
     def OK1(self):
         type = self.clicked1.get()
         self.list_images = []
+        self.list_vid=[]
         if self.File_Path == "":
             tkinter.messagebox.showinfo("error","Please Select a non Empty Path")
             self.browsee()
@@ -238,12 +333,21 @@ class gui:
 
         if self.selected == "Video":
             string=""
-            self.list_images = search_video(self.conn, self.filename)
+            self.list_vid = search_video(self.conn, self.filename)
             canvas = Canvas(self.root, width=1500, height=1500)
+            canvas.pack()
 
-            for i in self.list_images:
+
+
+            for i in self.list_vid:
                 string+=i+"\n"
-            canvas.create_text(string)
+
+            canvas.create_text(350, 50, fill="darkblue", font="Times 20 italic bold",
+                               text=string)
+            self.master.mainloop()
+
+
+
 
 
         if self.selected == "Image":
