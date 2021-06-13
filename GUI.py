@@ -219,9 +219,9 @@ class gui:
             menu = self.root.nametowidget(self.alg.menuname)
             menu.config(font=helv20)  # Set the dropdown menu's font
             self.alg.pack(pady=10)
-            self.browse = Button(self.root, text=" Browse Video", command=self.browsee, font="Helvetica 24 ",
+            self.browse = Button(self.root, text=" Browse Image", command=self.browsee, font="Helvetica 24 ",
                                  width=15)
-            self.browse_label = Label(self.root, text="Please Browse Query Video", font="Helvetica 30 ")
+            self.browse_label = Label(self.root, text="Please Browse Query Image", font="Helvetica 30 ")
 
 
         self.browse_label.pack(pady=20)

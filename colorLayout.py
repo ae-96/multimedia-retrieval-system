@@ -124,7 +124,7 @@ def is_similar_color_layout(first_array,second_array):
         return True
     else:
         return False
-
+'''
 #########################################################    
 first_image_path = 'images/1.jpg'
 second_image_path = 'images/1.jpg'
@@ -133,3 +133,4 @@ second_array = color_layout(second_image_path)
 print(is_similar_color_layout(first_array,second_array))
 #########################################################
 
+'''
