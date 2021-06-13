@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-#print(image)
+
 
 def split_to_4_images(image):
     # load image
@@ -116,7 +116,7 @@ def is_similar_color_layout(first_array,second_array):
         return True
     else:
         return False
-
+'''
 #########################################################
 first_image_path = "G:\\4th cse\sec term\multimedia\proj\\1.png"
 second_image_path = "G:\\4th cse\sec term\multimedia\proj\\1.png"
@@ -124,7 +124,7 @@ first_array = color_layout(first_image_path)
 second_array = color_layout(second_image_path)
 print(is_similar_color_layout(first_array,second_array))
 #########################################################
-
+'''
 
 
 
