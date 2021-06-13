@@ -6,6 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 from  tkinter import  filedialog
 import PIL.Image, PIL.ImageTk
+import os
 
 class gui:
     def __init__(self):
@@ -20,9 +21,9 @@ class gui:
         self.search_or_insert.pack(pady=50)
 
         self.clicked2 = StringVar()
-        self.clicked2.set("Search")
+        self.clicked2.set("Retrieve")
 
-        self.dropp = OptionMenu(self.root, self.clicked2, "Search", "MultiMedia Insertion")
+        self.dropp = OptionMenu(self.root, self.clicked2, "Retrieve", "DataBase Insertion","Clear DataBase")
         helv20 = tkFont.Font(family='Helvetica', size=34)
         self.dropp.config(font=helv20)
         menu = self.root.nametowidget(self.dropp.menuname)
@@ -42,7 +43,7 @@ class gui:
         self.dropp.destroy()
         self.search_or_insert.destroy()
         self.ok.destroy()
-        if self.clicked2.get()=="Search":
+        if self.clicked2.get()=="Retrieve":
 
             self.clicked = StringVar()
             self.clicked.set("Image")
@@ -59,7 +60,7 @@ class gui:
             self.ok.pack(pady=40)
             self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
             self.Reset.pack(side="bottom",pady=20)
-        else:
+        elif self.clicked2.get()=="DataBase Insertion":
             self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
             self.Reset.pack(side="bottom", pady=20)
             self.browse_data = Button(self.root, text="Browse", command=self.browse_d, font="Helvetica 28 ",
@@ -71,7 +72,22 @@ class gui:
 
             self.ok = Button(self.root, text="OK", command=self.add, font="Helvetica 26 ", width=4)
             self.ok.pack(pady=40)
+        else:
+            self.Reset = Button(self.root, text="Reset", command=self.reset, font="Helvetica 18 ", width=5)
+            self.Reset.pack(side="bottom", pady=20)
 
+            self.Clear=Button(self.root, text="Clear DataBase", command=self.clear, font="Helvetica 28 ",
+                                 width=10)
+
+
+
+
+    def clear(self):
+        for i in os.listdir(os. getcwd()):
+            if i== "mm.dp":
+                path = os.path.join(i, os. getcwd())
+                os.remove(path)
+        self.reset()
 
 
 
@@ -95,6 +111,7 @@ class gui:
     def reset(self):
         self.master.destroy()
 
+        self.folder_path = ""
         self.master = Tk()
         self.master.title("Content Based MultiMedia Retrieval System ")
         self.master.geometry("1100x600")
@@ -105,9 +122,9 @@ class gui:
         self.search_or_insert.pack(pady=50)
 
         self.clicked2 = StringVar()
-        self.clicked2.set("Search")
+        self.clicked2.set("Retrieve")
 
-        self.dropp = OptionMenu(self.root, self.clicked2, "Search", "Data Insertion")
+        self.dropp = OptionMenu(self.root, self.clicked2, "Retrieve", "DataBase Insertion", "Clear DataBase")
         helv20 = tkFont.Font(family='Helvetica', size=34)
         self.dropp.config(font=helv20)
         menu = self.root.nametowidget(self.dropp.menuname)
@@ -213,9 +230,11 @@ class gui:
         k=0
         for i in self.list_images:
 
-            img=cv2.imread(i)
-            img=cv2.resize(img, (150, 150))
-            image = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(img))
+            #img=cv2.imread(i)
+            #img=cv2.resize(img, (150, 150))
+            #image = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(img))
+            image = PhotoImage(file=i)
+            image=image.subsample(8, 8)
             images_list.append(image)
 
 
