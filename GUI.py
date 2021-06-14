@@ -288,25 +288,39 @@ class gui:
 
             canvas.pack(side="bottom")
 
+
             index_x=20
             index_y=0
             images_list=[]
             k=1
+
             for i in self.list_images:
 
+                img = Image.open(i)
+                w = img.size[0]
+                h = img.size[1]
+                r = 150/w
+                self.newh =int( r *h)
+                img = img.resize((150,self.newh), Image.ANTIALIAS)
 
-                image = PhotoImage(file=i)
-                image=image.subsample(9, 9)
+
+
+
+                image = ImageTk.PhotoImage(img)
+
+                # image=image.subsample(9, 9)
                 images_list.append(image)
+
+
 
             for i in images_list:
                 canvas.create_image(index_x,index_y,anchor = NW, image =i)
-                index_x+=200
+                index_x+=250
                 if ((k % 7 )==0) :
                     index_x = 20
-                    index_y+=240
+                    index_y+=self.newh +100
                 k+=1
-            canvas.create_image(index_x, index_y, anchor=NW, image=images_list[0])
+
 
 
             self.master.mainloop()
