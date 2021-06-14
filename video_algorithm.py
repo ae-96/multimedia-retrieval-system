@@ -5,6 +5,9 @@ import time
 import peakutils
 from utils import  prepare_dirs
 from meanColor import isSimilar
+
+
+
 def keyFrames_meanColor(videoPath):
     keyFramesList=keyframeDetection(videoPath, 'none', 0.1 ,1, False)[0]
     meanColorsList=[]
@@ -14,6 +17,8 @@ def keyFrames_meanColor(videoPath):
         avg_patch = np.ones(shape=i.shape, dtype=np.uint8) * np.uint8(average)
         meanColorsList.append(list(avg_patch[0][0]))
     return meanColorsList
+
+
 def is_videos_similar(meanColorsList_query,meanColorsList_db):
     similar_frames=0
     limit=min(len(meanColorsList_query),len(meanColorsList_db))
@@ -24,6 +29,7 @@ def is_videos_similar(meanColorsList_query,meanColorsList_db):
         return True
     else:
         return False
+
 
 def is_frame_in_video(meanColor_query,meanColorsList_db):
 
@@ -38,7 +44,7 @@ def is_frame_in_video(meanColor_query,meanColorsList_db):
 def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False):
     
     keyframePath = dest+'/keyFrames'
-    prepare_dirs(keyframePath)
+    #prepare_dirs(keyframePath)
 
     cap = cv2.VideoCapture(source)
     numberOfFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -88,7 +94,7 @@ def keyframeDetection(source, dest, Thres , minKeyFrameTimeinSec = 1, logs=False
     
     cnt = 1
     for frame_num in indices:
-        cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
+        #cv2.imwrite(os.path.join(keyframePath , 'keyframe'+ str(cnt) +'.jpg'), videoFrames[frame_num])
         keyFrames.append(videoFrames[frame_num])
         cnt +=1
         keyframesTimes.append(times[frame_num])
