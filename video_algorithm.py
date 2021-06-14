@@ -15,10 +15,9 @@ def keyFrames_meanColor(videoPath):
         meanColorsList.append(list(avg_patch[0][0]))
     return meanColorsList
 def is_videos_similar(meanColorsList_query,meanColorsList_db):
-    #print(meanColorsList_query)
-    #print(meanColorsList_db)
     similar_frames=0
-    for i in range(len(meanColorsList_query)):
+    limit=min(len(meanColorsList_query),len(meanColorsList_db))
+    for i in range(limit):
         if isSimilar(meanColorsList_query[i],meanColorsList_db[i]):
             similar_frames+=1
     if (similar_frames/len(meanColorsList_query))>0.9:

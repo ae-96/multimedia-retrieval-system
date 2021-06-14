@@ -218,11 +218,18 @@ def search_image(conn, path, algo):
 def search_video(conn, path):
     result = []
 
-    search_video = meanColor(path)
-    fromdb = get_cbvr(conn, "cbvr")
-    for i in range(len(fromdb)):
-        if is_frame_in_video(search_video, fromdb[i]):
-            result.append(get_cbvr(conn, "path")[i])
+    if(path[-4:]=='.mp4'):
+        search_video = keyFrames_meanColor(path)
+        fromdb = get_cbvr(conn, "cbvr")
+        for i in range(len(fromdb)):
+            if is_videos_similar(search_video, fromdb[i]):
+                result.append(get_cbvr(conn, "path")[i])
+    else:
+        search_video = meanColor(path)
+        fromdb = get_cbvr(conn, "cbvr")
+        for i in range(len(fromdb)):
+            if is_frame_in_video(search_video, fromdb[i]):
+                result.append(get_cbvr(conn, "path")[i])
     return result
 
 
