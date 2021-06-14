@@ -318,7 +318,7 @@ class gui:
                 index_x+=250
                 if ((k % 7 )==0) :
                     index_x = 20
-                    index_y+=350
+                    index_y+=250
                 k+=1
 
 
