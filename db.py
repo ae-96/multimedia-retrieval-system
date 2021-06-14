@@ -6,7 +6,7 @@ from sqlite3 import Error
 import colorLayout
 from meanColor import *
 from video_algorithm import *
-from histogram2 import *
+from histogram import *
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
